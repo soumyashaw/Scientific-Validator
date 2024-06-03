@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scivalid"
+version = "0.1.0"
+description = "A configurable scientific-data validator with schema, numerical, cross-field, and cross-file checks."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [{name = "Soumya Shaw"}]
+keywords = ["scientific-data", "validation", "schema", "numpy", "data-quality"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Topic :: Scientific/Engineering",
+]
+dependencies = [
+  "numpy>=1.21",
+  "PyYAML>=6.0",
+]
+
+[project.optional-dependencies]
+dev = [
+  "build>=1.0",
+  "hypothesis>=6.0",
+  "jsonschema>=4.0",
+  "pytest>=7.0",
+  "pytest-cov>=4.0",
+]
+
+[project.scripts]
+scivalid = "scivalid.cli:main"
+
+[project.entry-points."scivalid.readers"]
+csv = "scivalid.readers.csv_reader:CSVReader"
+jsonl = "scivalid.readers.jsonl_reader:JSONLReader"
+npz = "scivalid.readers.npz_reader:NPZReader"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.data-files]
+"share/scivalid/schemas" = [
+  "schemas/contract-v1.schema.json",
+  "schemas/report-v1.schema.json",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+branch = true
+source = ["scivalid"]
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 75

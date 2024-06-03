@@ -1,0 +1,14 @@
+include CHANGES.md
+include LICENSE
+include PROJECT_SPEC.md
+include README.md
+include ROADMAP.md
+include UPSTREAM.md
+recursive-include benchmarks *.py
+recursive-include docs *.md
+recursive-include examples *.csv *.jsonl *.py *.yaml
+recursive-include schemas *.json
+recursive-include tests *.json *.md *.py
+prune build
+global-exclude __pycache__
+global-exclude *.py[cod]
