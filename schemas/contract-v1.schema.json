@@ -1,0 +1,124 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scivalid.dev/schemas/contract-v1.schema.json",
+  "title": "SciValid contract version 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["contract_version", "dataset", "fields"],
+  "properties": {
+    "contract_version": {"const": 1},
+    "dataset": {"type": "string", "minLength": 1},
+    "description": {"type": "string"},
+    "formats": {
+      "type": "array",
+      "minItems": 1,
+      "uniqueItems": true,
+      "items": {"enum": ["csv", "jsonl", "ndjson", "npz"]}
+    },
+    "unexpected_fields": {"enum": ["allow", "warn", "error"]},
+    "sample_limit": {"type": "integer", "minimum": 0, "maximum": 1000},
+    "metadata": {"type": "object"},
+    "file_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "nonempty": {"type": "boolean"},
+        "checksums": {"type": "object", "additionalProperties": {"type": "string"}}
+      }
+    },
+    "fields": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {"$ref": "#/$defs/field"}
+    },
+    "relationships": {
+      "type": "array",
+      "items": {"$ref": "#/$defs/relationship"}
+    },
+    "dataset_rules": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "row_count": {"$ref": "#/$defs/rangeRule"},
+        "invalid_fraction": {"$ref": "#/$defs/maxRule"},
+        "consistent_schema": {"oneOf": [{"type": "boolean"}, {"$ref": "#/$defs/severityRule"}]},
+        "duplicate_row_rate": {"$ref": "#/$defs/maxRule"},
+        "category_coverage": {"type": "object"}
+      }
+    }
+  },
+  "$defs": {
+    "severity": {"enum": ["info", "warning", "error", "INFO", "WARNING", "ERROR"]},
+    "severityRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {"severity": {"$ref": "#/$defs/severity"}}
+    },
+    "rangeRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min": {"type": "integer", "minimum": 0},
+        "max": {"type": "integer", "minimum": 0},
+        "severity": {"$ref": "#/$defs/severity"}
+      }
+    },
+    "maxRule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["max"],
+      "properties": {
+        "max": {"type": "number", "minimum": 0},
+        "severity": {"$ref": "#/$defs/severity"}
+      }
+    },
+    "shapeDimension": {
+      "oneOf": [
+        {"type": "integer", "minimum": 0},
+        {"type": "string", "pattern": "^[A-Z][A-Z0-9_]*$"},
+        {"const": "*"},
+        {"type": "null"}
+      ]
+    },
+    "field": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "type": {"enum": ["bool", "int8", "int16", "int32", "int64", "uint8", "uint16", "uint32", "uint64", "float16", "float32", "float64", "number", "integer", "string", "datetime", "object"]},
+        "required": {"type": "boolean"},
+        "shape": {"type": "array", "items": {"$ref": "#/$defs/shapeDimension"}},
+        "finite": {"type": "boolean"},
+        "nullable": {"type": "boolean"},
+        "missing": {"enum": ["allow", "forbid"]},
+        "min": {}, "max": {},
+        "min_inclusive": {"type": "boolean"},
+        "max_inclusive": {"type": "boolean"},
+        "allowed": {"type": "array"},
+        "pattern": {"type": "string"},
+        "min_length": {"type": "integer", "minimum": 0},
+        "max_length": {"type": "integer", "minimum": 0},
+        "monotonic": {"enum": ["increasing", "decreasing", "strict_increasing", "strict_decreasing"]},
+        "unique": {"oneOf": [{"type": "boolean"}, {"enum": ["file", "global"]}]},
+        "severity": {"$ref": "#/$defs/severity"}
+      }
+    },
+    "relationship": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "rule"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "rule": {"enum": ["less", "less_equal", "greater", "greater_equal", "equal", "not_equal", "norm_components", "required_if", "mutually_exclusive", "shape_equal"]},
+        "left": {"type": "string"}, "right": {"type": "string"},
+        "field": {"type": "string"},
+        "components": {"type": "array", "items": {"type": "string"}, "minItems": 1},
+        "condition_field": {"type": "string"}, "condition_value": {},
+        "required_field": {"type": "string"},
+        "flags": {"type": "array", "items": {"type": "string"}, "minItems": 2},
+        "tolerance": {"type": "number", "minimum": 0},
+        "severity": {"$ref": "#/$defs/severity"}
+      }
+    }
+  }
+}
+

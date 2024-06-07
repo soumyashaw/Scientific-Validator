@@ -14,7 +14,6 @@ import yaml
 from .errors import ContractError
 from .models import Severity
 
-
 TOP_LEVEL_KEYS = {
     "contract_version",
     "dataset",
