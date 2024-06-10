@@ -19,4 +19,3 @@ class ReaderError(SciValidError):
 
 class OptionalDependencyError(ReaderError):
     """A requested reader needs a dependency that is not installed."""
-
