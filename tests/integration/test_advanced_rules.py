@@ -143,7 +143,7 @@ class AdvancedRuleTests(unittest.TestCase):
         ids = {item.rule_id for item in report.findings}
         self.assertIn("schema.shape.b", ids)
         self.assertIn("schema.leading_dimension_consistent", ids)
-
+        print(ids)
 
 if __name__ == "__main__":
     unittest.main()
