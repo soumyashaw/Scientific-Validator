@@ -16,7 +16,6 @@ class Severity(str, Enum):
     def parse(cls, value: str) -> "Severity":
         return cls(str(value).upper())
 
-
 @dataclass
 class Finding:
     rule_id: str
