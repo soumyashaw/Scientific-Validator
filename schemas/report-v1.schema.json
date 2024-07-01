@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://scivalid.dev/schemas/report-v1.schema.json",
+  "title": "SciValid report version 1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["report_version", "validator_version", "dataset", "contract_hash", "started_at", "completed_at", "completed", "inputs", "files", "summary", "metrics", "findings"],
+  "properties": {
+    "report_version": {"const": 1},
+    "validator_version": {"type": "string"},
+    "dataset": {"type": "string"},
+    "contract_hash": {"type": "string", "pattern": "^sha256:[0-9a-f]{64}$"},
+    "started_at": {"type": "string"},
+    "completed_at": {"type": "string"},
+    "completed": {"type": "boolean"},
+    "inputs": {"type": "array", "items": {"type": "string"}},
+    "files": {"type": "array", "items": {"$ref": "#/$defs/file"}},
+    "summary": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["errors", "warnings", "info", "findings"],
+      "properties": {
+        "errors": {"type": "integer", "minimum": 0},
+        "warnings": {"type": "integer", "minimum": 0},
+        "info": {"type": "integer", "minimum": 0},
+        "findings": {"type": "integer", "minimum": 0}
+      }
+    },
+    "metrics": {"type": "object"},
+    "findings": {"type": "array", "items": {"$ref": "#/$defs/finding"}}
+  },
+  "$defs": {
+    "file": {
+      "type": "object",
+      "required": ["path", "format", "reader", "size_bytes", "rows", "fields", "completed"],
+      "properties": {
+        "path": {"type": "string"}, "format": {"type": "string"}, "reader": {"type": "string"},
+        "size_bytes": {"type": "integer", "minimum": 0}, "rows": {"type": "integer", "minimum": 0},
+        "fields": {"type": "array", "items": {"type": "string"}},
+        "sha256": {"type": "string"}, "completed": {"type": "boolean"}
+      }
+    },
+    "finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["rule_id", "severity", "message", "dataset", "sample_locations", "validator_version"],
+      "properties": {
+        "rule_id": {"type": "string"}, "severity": {"enum": ["INFO", "WARNING", "ERROR"]},
+        "message": {"type": "string"}, "dataset": {"type": "string"}, "file": {"type": "string"},
+        "field": {"type": "string"}, "observed": {}, "expected": {},
+        "affected_count": {"type": "integer", "minimum": 0}, "examined_count": {"type": "integer", "minimum": 0},
+        "sample_locations": {"type": "array"}, "suggestion": {"type": "string"},
+        "reader": {"type": "string"}, "validator_version": {"type": "string"}
+      }
+    }
+  }
+}
+
