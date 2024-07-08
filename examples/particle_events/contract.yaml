@@ -1,0 +1,43 @@
+contract_version: 1
+dataset: particle-events
+formats: [csv, jsonl]
+unexpected_fields: warn
+sample_limit: 5
+
+fields:
+  event_id:
+    type: int64
+    unique: global
+  energy_gev:
+    type: float64
+    finite: true
+    min: 0.0
+  start_time:
+    type: float64
+    finite: true
+  end_time:
+    type: float64
+    finite: true
+  category:
+    type: string
+    allowed: [signal, background, control]
+
+relationships:
+  - id: start_before_end
+    rule: less_equal
+    left: start_time
+    right: end_time
+    severity: error
+
+dataset_rules:
+  row_count:
+    min: 1
+  invalid_fraction:
+    max: 0.05
+    severity: warning
+  consistent_schema: true
+  category_coverage:
+    category:
+      required: [signal, background]
+      severity: warning
+

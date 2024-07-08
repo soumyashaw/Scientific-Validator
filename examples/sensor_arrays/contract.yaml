@@ -1,0 +1,18 @@
+contract_version: 1
+dataset: sensor-arrays
+formats: [jsonl, npz]
+unexpected_fields: error
+fields:
+  sample_id:
+    type: int64
+    shape: [N]
+    unique: global
+  signal:
+    type: number
+    shape: [N, 3]
+    finite: true
+    min: -10.0
+    max: 10.0
+dataset_rules:
+  row_count: {min: 1}
+  consistent_schema: true

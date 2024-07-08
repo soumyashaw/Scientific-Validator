@@ -1,0 +1,4 @@
+event_id,energy_gev,start_time,end_time,category
+2003,110.2,3.0,3.8,signal
+2005,not-a-number,4.0,4.9,background
+
